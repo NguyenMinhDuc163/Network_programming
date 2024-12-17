@@ -15,8 +15,8 @@ public class KhachHang {
     public static String normalizeName(String name){
         String[] words = name.trim().split("\\s+");
         String res = "";
-        for (String word : words) {
-            res += word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase() + " ";
+        for (int i =  0; i < words.length - 1; i++) {
+            res += words[i].substring(0, 1).toUpperCase() + words[i].substring(1).toLowerCase() + " ";
         }
         return  words[words.length - 1].toUpperCase() + ", " +  res.substring(0, res.length() - 1).trim();
     }
