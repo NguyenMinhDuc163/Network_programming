@@ -2,11 +2,11 @@ package RMI;
 
 import java.rmi.*;
 import java.rmi.registry.*;
-import RMI.ByteService;
+
 public class ChuyenDoiBatPhan {
     public static void main(String[] args) throws Exception {
         // a. Nhận dữ liệu từ server
-        Registry rg = LocateRegistry.getRegistry("203.162.10.109", 1099);
+        Registry rg = LocateRegistry.getRegistry("203.162.10.109"   , 1099);
         ByteService sv = (ByteService) rg.lookup("RMIByteService");
         byte[] a = sv.requestData("B21DCCN249", "X1AAtZ7r");
         for (byte x : a) System.out.print(x + " ");
@@ -16,6 +16,6 @@ public class ChuyenDoiBatPhan {
         for (byte x : a) res+=String.format("%03o", x & 0xFF);
         System.out.println(res);
         byte[] ans = res.toString().getBytes();
-        sv.submitData("B21DCCN249", "HhPAxeDw", ans);
+        sv.submitData("B21DCCN249", "X1AAtZ7r", ans);
     }
 }
