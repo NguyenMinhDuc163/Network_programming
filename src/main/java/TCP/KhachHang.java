@@ -3,50 +3,51 @@ package TCP;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Locale;
 
-public class KhachHang {
-
-    public static String normalizeBirth(String s){
-        String []birth = s.split("-");
-        return birth[1] + "/" + birth[0] + "/" + birth[2];
-    }
-
-    public static String normalizeName(String name){
-        String[] words = name.trim().split("\\s+");
-        String res = "";
-        for (int i =  0; i < words.length - 1; i++) {
-            res += words[i].substring(0, 1).toUpperCase() + words[i].substring(1).toLowerCase() + " ";
-        }
-        return  words[words.length - 1].toUpperCase() + ", " +  res.substring(0, res.length() - 1).trim();
-    }
-
-    public static String createUserName(String name){
-        String []s = name.toLowerCase().split("\\s+");
-        String userName = "";
-        for(int i = 0;i<s.length - 1;i++) userName+=Character.toLowerCase(s[i].charAt(0));
-        userName +=  s[s.length - 1].toLowerCase();
-        return userName.trim();
-    }
+class KhackHang{
     public static void main(String[] args) {
-        String serverAddress = "203.162.10.109";
-        int port = 2209;
-        String message = "B21DCCN249;gQtDFKZE";
-        try (Socket socket = new Socket(serverAddress, port)) {
-            ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
-            ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
-            output.writeObject(message);
-            output.flush();
-            System.out.println("da gui" + message);
-            Customer customer = (Customer) input.readObject();
-            System.out.println("da nhan " + customer);
-            customer.setUserName(createUserName(customer.getName()));
-            customer.setName(normalizeName(customer.getName()));
-            customer.setDayOfBirth(normalizeBirth(customer.getDayOfBirth()));
+        String studentCode = "B21DCCN249";
+        String qCode = "gQtDFKZE";
+        String serverAddress = "203.162.10.109";  // Địa chỉ IP của server
+        int port = 2209 ;  // Cổng kết nối
+        String message = studentCode + ";" + qCode;
 
-            output.writeObject(customer);
-            System.out.println("da gui " + customer);
-        } catch (Exception e){
+        try (Socket socket = new Socket(serverAddress, port)){
+            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+
+            outputStream.writeObject(message);
+            outputStream.flush();
+            System.out.println("da gui " + message);
+
+            Customer customer = (Customer) inputStream.readObject();
+            System.out.println(customer);
+            // ten
+            String[] data = customer.getName().split("\\s+");
+            String name = data[data.length - 1].toUpperCase() + ", ";
+            for(int i = 0; i < data.length - 1; i++){
+                data[i] = data[i].substring(0, 1).toUpperCase() + data[i].substring(1).toLowerCase() + " ";
+                name += data[i];
+            }
+
+            // useName
+            String userName = "";
+            for(int i = 0 ; i < data.length - 1; i++){
+                userName += data[i].substring(0, 1).toLowerCase() ;
+            }
+            userName += data[data.length - 1].toLowerCase();
+            // ns
+            data = customer.getDayOfBirth().split("-");
+            String birh = data[1] + "/" + data[0] + "/" + data[2];
+
+            customer.setName(name);
+            customer.setDayOfBirth(birh);
+            customer.setUserName(userName);
+            System.out.println(customer);
+
+            outputStream.writeObject(customer);
+            outputStream.flush();
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
