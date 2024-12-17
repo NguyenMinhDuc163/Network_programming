@@ -1,82 +1,63 @@
 package UDP;
 
-
 import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 public class Client {
 
-    // Lớp Product
+    public static String reverseName(String name){
+        String []s = name.split("\\s+");
+        String res =  s[s.length - 1] + " ";
+        for(int i = 1; i < s.length - 1; i ++){
+            res += s[i] + " ";
+        }
+        return res + s[0];
+    }
 
-
+    public  static int reverseQuantity(int quantity){
+        StringBuilder s = new StringBuilder(String.valueOf(quantity));
+        return Integer.parseInt(s.reverse().toString());
+    }
     public static void main(String[] args) {
-        String serverAddress = "203.162.10.109";
+        String ipAdress = "203.162.10.109";
         int port = 2209;
-        String studentCode = "B21DCCN249";
-        String qCode = "pU29UaGj";
-        String message = ";" + studentCode + ";" + qCode;  // Chuỗi gửi đến server
-
-        try (DatagramSocket socket = new DatagramSocket()) {
-            // Gửi thông điệp đến server
-            DatagramPacket out = new DatagramPacket(message.getBytes(), message.length(), InetAddress.getByName(serverAddress), port);
+        String message = ";B21DCCN249;pU29UaGj";
+        try(DatagramSocket socket = new DatagramSocket()){
+            DatagramPacket out = new DatagramPacket(message.getBytes(), message.length(), InetAddress.getByName(ipAdress), port);
             socket.send(out);
-            System.out.println("Đã gửi message: " + message);
+            System.out.println("da gui" + out);
 
-            // Nhận phản hồi từ server (requestId và đối tượng Product)
-            byte[] data = new byte[1024];
+            byte []data = new byte[1024];
             DatagramPacket in = new DatagramPacket(data, data.length);
             socket.receive(in);
 
-            // Lấy chuỗi requestId
-            String requestId = new String(in.getData(), 0, 8).trim();  // 08 byte đầu chứa chuỗi requestId
+            String code = new String(in.getData(), 0, 8);
+            System.out.println("code " + code);
 
-            // Đọc đối tượng Product từ phần còn lại của packet
-            ByteArrayInputStream byteStream = new ByteArrayInputStream(in.getData(), 8, in.getLength() - 8);
-            ObjectInputStream objectStream = new ObjectInputStream(byteStream);
-            Product product = (Product) objectStream.readObject();
-            System.out.println("Đã nhận từ server: " + product);
+            ByteArrayInputStream dataStream = new ByteArrayInputStream(in.getData(), 8, in.getLength() - 8);
+            ObjectInputStream input = new ObjectInputStream(dataStream);
+            Product product = (Product) input.readObject();
+            System.out.println(product);
 
-            // Sửa tên và số lượng
             product.setName(reverseName(product.getName()));
             product.setQuantity(reverseQuantity(product.getQuantity()));
 
-            // Gửi lại thông điệp với đối tượng Product đã sửa
-            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-            ObjectOutputStream objectOut = new ObjectOutputStream(byteOut);
-            objectOut.writeObject(product);
-            byte[] productBytes = byteOut.toByteArray();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+            objectOutputStream.writeObject(product);
+            byte []productByte = outputStream.toByteArray();
 
-            byte[] responseData = new byte[8 + productBytes.length];
-            // Gắn requestId vào đầu chuỗi responseData
-            System.arraycopy(requestId.getBytes(), 0, responseData, 0, 8);
-            System.arraycopy(productBytes, 0, responseData, 8, productBytes.length);
+            byte [] request = new byte[8 + productByte.length];
+            System.arraycopy(code.getBytes(), 0, request, 0, 8);
+            System.arraycopy(productByte, 0, request, 8, productByte.length);
 
-            DatagramPacket res = new DatagramPacket(responseData, responseData.length, InetAddress.getByName(serverAddress), port);
-            socket.send(res);
-            System.out.println("Đã gửi kết quả: " + product);
-
-        } catch (IOException | ClassNotFoundException e) {
+            out = new DatagramPacket(request, request.length, InetAddress.getByName(ipAdress), port);
+            socket.send(out);
+            System.out.println(product);
+        }catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    // Hàm đảo ngược tên sản phẩm: Đảo vị trí từ đầu tiên và cuối cùng
-    public static String reverseName(String name) {
-        String[] words = name.split(" ");
-        if (words.length > 1) {
-            String temp = words[0];
-            words[0] = words[words.length - 1];
-            words[words.length - 1] = temp;
-        }
-        return String.join(" ", words);
-    }
-
-    // Hàm đảo ngược số lượng (từ dạng số sang dạng đảo ngược)
-    public static int reverseQuantity(int quantity) {
-        String quantityStr = Integer.toString(quantity);
-        StringBuilder reversed = new StringBuilder(quantityStr);
-        reversed.reverse();
-        return Integer.parseInt(reversed.toString());
     }
 }

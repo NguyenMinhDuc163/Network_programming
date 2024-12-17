@@ -4,21 +4,9 @@ import java.io.Serializable;
 
 public class Product implements Serializable {
     private static final long serialVersionUID = 20161107;
-
-    private String id;
-    private String code;
-    private String name;
+    private String id, code, name;
     private int quantity;
 
-    // Constructor
-    public Product(String id, String code, String name, int quantity) {
-        this.id = id;
-        this.code = code;
-        this.name = name;
-        this.quantity = quantity;
-    }
-
-    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -53,6 +41,11 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        return "Product{id='" + id + "', code='" + code + "', name='" + name + "', quantity=" + quantity + "}";
+        return "Product{" +
+                "id='" + id + '\'' +
+                ", code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                ", quantity=" + quantity +
+                '}';
     }
 }
