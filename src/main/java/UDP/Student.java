@@ -1,13 +1,20 @@
 package UDP;
 
-import java.io.Serial;
 import java.io.Serializable;
 
-public class Product implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 20161107;
-    private String id, code, name;
-    private int quantity;
+public class Student implements Serializable {
+    private String id, code, name, email;
+    private static final long serialVersionUID = 20171107;
+    public Student(String name, String email, String code, String id) {
+        this.name = name;
+        this.email = email;
+        this.code = code;
+        this.id = id;
+    }
+
+    public Student(String code) {
+        this.code = code;
+    }
 
     public String getId() {
         return id;
@@ -33,21 +40,21 @@ public class Product implements Serializable {
         this.name = name;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public String getEmail() {
+        return email;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
     public String toString() {
-        return "Product{" +
+        return "Student{" +
                 "id='" + id + '\'' +
                 ", code='" + code + '\'' +
                 ", name='" + name + '\'' +
-                ", quantity=" + quantity +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

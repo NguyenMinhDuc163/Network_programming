@@ -9,7 +9,7 @@ public class DGk7EhzV {
     public static void main(String[] args) {
         String ipAddress =  "203.162.10.109";
         int port = 2207;
-        String message = "B21DCCN249;DGk7EhzV";
+        String message = "B21DCCN423;1s3ZSSuF";
 
         try (Socket socket = new Socket(ipAddress, port)){
             DataInputStream in = new DataInputStream(socket.getInputStream());

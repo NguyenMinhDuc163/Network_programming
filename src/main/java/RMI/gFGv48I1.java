@@ -10,7 +10,7 @@ public class gFGv48I1 {
         Registry rg = LocateRegistry.getRegistry("203.162.10.109", 1099);  // Kết nối với RMI Registry Server tại địa chỉ 203.162.10.109
         CharacterService sv = (CharacterService) rg.lookup("RMICharacterService");
 
-        // Triệu gọi phương thức requestCharacter để nhận chuỗi từ server
+        // Triệu gọi phương thức requestCharacter để nhận chuỗi từ   server
         String inputString = sv.requestCharacter("B21DCCN249", "gFGv48I1");
         System.out.println("Chuỗi nhận từ server: " + inputString);
 

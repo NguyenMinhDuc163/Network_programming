@@ -6,8 +6,8 @@ import java.net.Socket;
 
 class KhackHang{
     public static void main(String[] args) {
-        String studentCode = "B21DCCN249";
-        String qCode = "gQtDFKZE";
+        String studentCode = "B21DCCN423";
+        String qCode = "sQ4HJaA7";
         String serverAddress = "203.162.10.109";  // Địa chỉ IP của server
         int port = 2209 ;  // Cổng kết nối
         String message = studentCode + ";" + qCode;
